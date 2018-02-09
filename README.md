@@ -1,0 +1,2 @@
+# turbo-local-e-store-services
+a local store management would provide a customer a look into what is available in the local stores and what can be made available to them in minutes which usually requires a day or two, maybe weeks sometimes. Also, the business of the local stores would now not be so much affected. Not only that, services can be acquired by both the customers and stores. This would save the hassle of customer from going through the trouble of finding best service.
