@@ -1,0 +1,299 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package UserInterface.CustomerRole;
+
+import EcoSystem.EcoSystem;
+import EcoSystem.Enterprise.Billing_ShipmentEnterprise;
+import EcoSystem.Enterprise.Enterprise;
+import EcoSystem.Network.Network;
+import EcoSystem.Organization.BillingOrganization;
+import EcoSystem.Organization.CustomerOrganization;
+import EcoSystem.Organization.Organization;
+import EcoSystem.UserAccount.UserAccount;
+import EcoSystem.WorkQueue.ProductBillingWorkRequest;
+import EcoSystem.WorkQueue.ServiceBillingWorkRequest;
+import EcoSystem.WorkQueue.WorkRequest;
+import java.awt.CardLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author Lucy Bai
+ */
+public class MyBillings extends javax.swing.JPanel {
+
+    /**
+     * Creates new form MyBillings
+     */
+ private JPanel userProcessContainer;
+    private UserAccount account;
+    private Enterprise enterprise;
+    private Organization organization;
+    private EcoSystem system;
+    private Network network;
+
+   public MyBillings(JPanel userProcessContainer, UserAccount account, Enterprise enterprise, CustomerOrganization customerOrganization, EcoSystem system) {
+       initComponents();
+        
+        this.account = account;
+        this.enterprise = enterprise;
+        this.userProcessContainer = userProcessContainer;
+        this.organization = organization;
+        this.system = system;
+        radioProduct.setSelected(true);
+        this.network = whatNetwork();
+        radioProduct.setSelected(true);
+        populateProductTable();
+        groupButton();
+    }
+    public final Network whatNetwork() {
+        Network n = null;
+        for (Network network : system.getNetworkList()) {
+            for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
+                if (enterprise == this.enterprise) {
+                    n = network;
+                    break;
+                }
+            }
+        }
+        return n;
+    }
+    private void groupButton() {
+        ButtonGroup bg1 = new ButtonGroup();
+        bg1.add(radioProduct);
+        bg1.add(radioService);
+    }
+    public void  populateProductTable(){
+        DefaultTableModel dtm = (DefaultTableModel) tblBillings.getModel();
+        dtm.setRowCount(0);
+        for(Enterprise enterprise:network.getEnterpriseDirectory().getEnterpriseList()){
+            if(enterprise instanceof Billing_ShipmentEnterprise){
+                for(Organization org: enterprise.getOrganizationDirectory().getOrganizationList()){
+                    if(org instanceof BillingOrganization){
+                        for(WorkRequest wk: org.getWorkQueue().getWorkRequestList()){
+                            if(wk instanceof ProductBillingWorkRequest){
+                                if(((ProductBillingWorkRequest) wk).getOrder().getUserAccount()==account){
+                                    Object row[]=new Object[3];
+                                    row[0]=((ProductBillingWorkRequest) wk).getOrder();
+                                    row[1]=wk.getRequestDate();
+                                    row[2]=((ProductBillingWorkRequest) wk).getPayment();
+                                    dtm.addRow(row);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    public void populateServiceTable(){
+                DefaultTableModel dtm = (DefaultTableModel) tblBillings.getModel();
+        dtm.setRowCount(0);
+        for(Enterprise enterprise:network.getEnterpriseDirectory().getEnterpriseList()){
+            if(enterprise instanceof Billing_ShipmentEnterprise){
+                for(Organization org: enterprise.getOrganizationDirectory().getOrganizationList()){
+                    if(org instanceof BillingOrganization){
+                        for(WorkRequest wk: org.getWorkQueue().getWorkRequestList()){
+                            if(wk instanceof ServiceBillingWorkRequest){
+                                if(((ServiceBillingWorkRequest) wk).getService().getUserAccount()==account){
+                                    Object row[]=new Object[3];
+                                    row[0]=((ServiceBillingWorkRequest) wk).getService();
+                                    row[1]=wk.getRequestDate();
+                                    row[2]=((ServiceBillingWorkRequest) wk).getPayment();
+                                    dtm.addRow(row);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        jPanel6 = new javax.swing.JPanel();
+        btnBack = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        radioProduct = new javax.swing.JRadioButton();
+        radioService = new javax.swing.JRadioButton();
+        loginPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblBillings = new javax.swing.JTable();
+
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+
+        btnBack.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        btnBack.setText("<< Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(648, Short.MAX_VALUE)
+                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(430, 430, 430))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnBack)
+                .addContainerGap())
+        );
+
+        add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(-1, 0, 1230, 50));
+
+        jPanel5.setBackground(new java.awt.Color(204, 204, 204));
+
+        jLabel1.setFont(new java.awt.Font("Calibri", 1, 36)); // NOI18N
+        jLabel1.setText("My Billings");
+
+        radioProduct.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        radioProduct.setText("Product");
+        radioProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioProductActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(radioService);
+        radioService.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        radioService.setText("Service");
+        radioService.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioServiceActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(398, 398, 398)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(330, 330, 330)
+                        .addComponent(radioProduct)
+                        .addGap(122, 122, 122)
+                        .addComponent(radioService)))
+                .addContainerGap(618, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(57, 57, 57)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(radioProduct)
+                    .addComponent(radioService))
+                .addGap(38, 38, 38))
+        );
+
+        add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 47, 1230, 220));
+
+        loginPanel.setBackground(new java.awt.Color(32, 47, 90));
+
+        tblBillings.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        tblBillings.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "OrderId", "Date", "BillingPrice"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblBillings);
+        if (tblBillings.getColumnModel().getColumnCount() > 0) {
+            tblBillings.getColumnModel().getColumn(0).setResizable(false);
+            tblBillings.getColumnModel().getColumn(1).setResizable(false);
+            tblBillings.getColumnModel().getColumn(2).setResizable(false);
+        }
+
+        javax.swing.GroupLayout loginPanelLayout = new javax.swing.GroupLayout(loginPanel);
+        loginPanel.setLayout(loginPanelLayout);
+        loginPanelLayout.setHorizontalGroup(
+            loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(loginPanelLayout.createSequentialGroup()
+                .addGap(92, 92, 92)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 713, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(425, Short.MAX_VALUE))
+        );
+        loginPanelLayout.setVerticalGroup(
+            loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginPanelLayout.createSequentialGroup()
+                .addGap(63, 63, 63)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(166, Short.MAX_VALUE))
+        );
+
+        add(loginPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 1230, 540));
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void radioProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioProductActionPerformed
+        // TODO add your handling code here:
+        populateProductTable();
+    }//GEN-LAST:event_radioProductActionPerformed
+
+    private void radioServiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioServiceActionPerformed
+        // TODO add your handling code here:
+        populateServiceTable();
+    }//GEN-LAST:event_radioServiceActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        userProcessContainer.remove(this);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
+    }//GEN-LAST:event_btnBackActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel loginPanel;
+    private javax.swing.JRadioButton radioProduct;
+    private javax.swing.JRadioButton radioService;
+    private javax.swing.JTable tblBillings;
+    // End of variables declaration//GEN-END:variables
+}
